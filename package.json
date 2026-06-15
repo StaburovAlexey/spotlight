@@ -11,9 +11,22 @@
     "dev:down": "docker compose down",
     "dev:logs": "docker compose logs -f",
     "dev:reset": "docker compose down -v",
+
+    "shared:build": "npm run build -w @music-app/shared",
+    "shared:typecheck": "npm run typecheck -w @music-app/shared",
+
     "web:dev": "npm run dev -w @music-app/web",
     "web:build": "npm run build -w @music-app/web",
+    "web:typecheck": "npm run typecheck -w @music-app/web",
+
     "api:dev": "npm run dev -w @music-app/api",
-    "api:build": "npm run build -w @music-app/api"
+    "api:build": "npm run build -w @music-app/api",
+    "api:typecheck": "npm run typecheck -w @music-app/api",
+
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.0.0"
   }
 }
