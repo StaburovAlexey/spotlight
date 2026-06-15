@@ -1,0 +1,15 @@
+{
+  "name": "@music-app/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@music-app/shared": "0.1.0"
+  },
+  "devDependencies": {}
+}

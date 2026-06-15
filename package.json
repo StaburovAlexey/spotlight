@@ -1,0 +1,19 @@
+{
+  "name": "music-app",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "docker compose up --build",
+    "dev:down": "docker compose down",
+    "dev:logs": "docker compose logs -f",
+    "dev:reset": "docker compose down -v",
+    "web:dev": "npm run dev -w @music-app/web",
+    "web:build": "npm run build -w @music-app/web",
+    "api:dev": "npm run dev -w @music-app/api",
+    "api:build": "npm run build -w @music-app/api"
+  }
+}
