@@ -1,0 +1,52 @@
+.page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background: var(--background);
+  text-align: center;
+}
+
+.content {
+  max-width: 420px;
+}
+
+.code {
+  margin: 0;
+  color: #1ed760;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.title {
+  margin: 8px 0 0;
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.description {
+  margin: 16px 0 24px;
+  color: #a1a1aa;
+  line-height: 1.6;
+}
+
+.homeLink {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 18px;
+  border-radius: 999px;
+
+  background: #1db954;
+  color: #050505;
+
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.homeLink:hover {
+  background: #1ed760;
+}

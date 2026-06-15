@@ -1,5 +1,4 @@
 .page {
-  min-height: 100vh;
   padding: 24px;
   background:
     radial-gradient(circle at top, color-mix(in oklch, var(--primary) 20%, transparent), transparent 32rem),

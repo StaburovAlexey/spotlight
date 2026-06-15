@@ -1,0 +1,18 @@
+.page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, rgba(29, 185, 84, 0.16), transparent 32rem),
+    var(--background);
+}
+
+.card {
+  width: min(100%, 420px);
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
