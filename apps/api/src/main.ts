@@ -1,5 +1,16 @@
-import type { UserRole } from '@music-app/shared'
+import { buildApp } from "./app.js";
 
-const role: UserRole = 'admin'
+const app = buildApp();
 
-console.log(`API placeholder. Current role: ${role}`)
+const port = Number(process.env.PORT ?? 4000);
+const host = process.env.HOST ?? "0.0.0.0";
+
+try {
+  await app.listen({
+    port,
+    host,
+  });
+} catch (error) {
+  app.log.error(error);
+  process.exit(1);
+}

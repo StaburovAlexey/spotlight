@@ -1,11 +1,31 @@
 import { Button, Card, Chip } from "@heroui/react";
+import { useEffect, useState } from "react";
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./HomePage.module.css";
 
 export function HomePage() {
+  const [apiStatus, setApiStatus] = useState<"idle" | "ok" | "error">("idle");
+
+  useEffect(() => {
+    fetch("/api/health")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("API request failed");
+        }
+
+        return response.json() as Promise<{ status: string }>;
+      })
+      .then((data) => {
+        setApiStatus(data.status === "ok" ? "ok" : "error");
+      })
+      .catch(() => {
+        setApiStatus("error");
+      });
+  }, []);
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
+        <p>API status: {apiStatus}</p>
         <Chip variant="primary">Self-hosted music app</Chip>
 
         <h1 className={styles.title}>Твоя музыкальная библиотека</h1>
