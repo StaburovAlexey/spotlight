@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum TrackStatus {
+  PROCESSING
+  READY
+  FAILED
+}
+
+model User {
+  id                 String     @id @default(uuid()) @db.Uuid
+  email              String     @unique
+  username           String     @unique
+  displayName        String
+  passwordHash       String
+  role               UserRole   @default(USER)
+  status             UserStatus @default(ACTIVE)
+  mustChangePassword Boolean    @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  uploadedTracks Track[]    @relation("UploadedTracks")
+  uploadedAlbums Album[]    @relation("UploadedAlbums")
+  playlists      Playlist[]
+
+  @@index([role])
+  @@index([status])
+  @@index([deletedAt])
+}
+
+model Artist {
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  albums Album[]
+  tracks Track[]
+
+  @@index([name])
+  @@index([deletedAt])
+}
+
+model Album {
+  id              String  @id @default(uuid()) @db.Uuid
+  title           String
+  releaseYear     Int?
+  coverStorageKey String?
+
+  artistId String? @db.Uuid
+  artist   Artist? @relation(fields: [artistId], references: [id])
+
+  uploadedById String? @db.Uuid
+  uploadedBy   User?   @relation("UploadedAlbums", fields: [uploadedById], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  tracks Track[]
+
+  @@index([title])
+  @@index([artistId])
+  @@index([uploadedById])
+  @@index([deletedAt])
+}
+
+model Track {
+  id               String      @id @default(uuid()) @db.Uuid
+  title            String
+  durationSeconds  Int?
+  trackNumber      Int?
+  discNumber       Int         @default(1)
+
+  storageKey       String      @unique
+  originalFileName String
+  mimeType         String
+  sizeBytes        BigInt
+  sha256           String      @unique
+  status           TrackStatus @default(READY)
+
+  artistId String? @db.Uuid
+  artist   Artist? @relation(fields: [artistId], references: [id])
+
+  albumId String? @db.Uuid
+  album   Album?  @relation(fields: [albumId], references: [id])
+
+  uploadedById String? @db.Uuid
+  uploadedBy   User?   @relation("UploadedTracks", fields: [uploadedById], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  playlistItems PlaylistTrack[]
+
+  @@index([title])
+  @@index([artistId])
+  @@index([albumId])
+  @@index([uploadedById])
+  @@index([status])
+  @@index([deletedAt])
+}
+
+model Playlist {
+  id              String  @id @default(uuid()) @db.Uuid
+  name            String
+  description     String?
+  coverStorageKey String?
+
+  ownerId String @db.Uuid
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  tracks PlaylistTrack[]
+
+  @@index([ownerId])
+  @@index([deletedAt])
+}
+
+model PlaylistTrack {
+  id String @id @default(uuid()) @db.Uuid
+
+  playlistId String   @db.Uuid
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+
+  trackId String @db.Uuid
+  track   Track  @relation(fields: [trackId], references: [id])
+
+  position Int
+  addedAt  DateTime @default(now())
+
+  @@unique([playlistId, position])
+  @@index([playlistId])
+  @@index([trackId])
+}
