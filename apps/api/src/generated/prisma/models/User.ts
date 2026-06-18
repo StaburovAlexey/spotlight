@@ -230,6 +230,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  sessions?: Prisma.SessionListRelationFilter
   uploadedTracks?: Prisma.TrackListRelationFilter
   uploadedAlbums?: Prisma.AlbumListRelationFilter
   playlists?: Prisma.PlaylistListRelationFilter
@@ -247,6 +248,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  sessions?: Prisma.SessionOrderByRelationAggregateInput
   uploadedTracks?: Prisma.TrackOrderByRelationAggregateInput
   uploadedAlbums?: Prisma.AlbumOrderByRelationAggregateInput
   playlists?: Prisma.PlaylistOrderByRelationAggregateInput
@@ -267,6 +269,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  sessions?: Prisma.SessionListRelationFilter
   uploadedTracks?: Prisma.TrackListRelationFilter
   uploadedAlbums?: Prisma.AlbumListRelationFilter
   playlists?: Prisma.PlaylistListRelationFilter
@@ -318,6 +321,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   uploadedTracks?: Prisma.TrackCreateNestedManyWithoutUploadedByInput
   uploadedAlbums?: Prisma.AlbumCreateNestedManyWithoutUploadedByInput
   playlists?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput
@@ -335,6 +339,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   uploadedTracks?: Prisma.TrackUncheckedCreateNestedManyWithoutUploadedByInput
   uploadedAlbums?: Prisma.AlbumUncheckedCreateNestedManyWithoutUploadedByInput
   playlists?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput
@@ -352,6 +357,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   uploadedTracks?: Prisma.TrackUpdateManyWithoutUploadedByNestedInput
   uploadedAlbums?: Prisma.AlbumUpdateManyWithoutUploadedByNestedInput
   playlists?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput
@@ -369,6 +375,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   uploadedTracks?: Prisma.TrackUncheckedUpdateManyWithoutUploadedByNestedInput
   uploadedAlbums?: Prisma.AlbumUncheckedUpdateManyWithoutUploadedByNestedInput
   playlists?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput
@@ -414,6 +421,11 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -463,13 +475,18 @@ export type UserNullableScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput | null
 }
 
-export type UserScalarRelationFilter = {
-  is?: Prisma.UserWhereInput
-  isNot?: Prisma.UserWhereInput
+export type UserCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.UserUpsertWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
 export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -482,14 +499,6 @@ export type EnumUserStatusFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type UserCreateNestedOneWithoutUploadedAlbumsInput = {
@@ -538,6 +547,90 @@ export type UserUpdateOneRequiredWithoutPlaylistsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlaylistsInput, Prisma.UserUpdateWithoutPlaylistsInput>, Prisma.UserUncheckedUpdateWithoutPlaylistsInput>
 }
 
+export type UserCreateWithoutSessionsInput = {
+  id?: string
+  email: string
+  username: string
+  displayName: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  mustChangePassword?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  uploadedTracks?: Prisma.TrackCreateNestedManyWithoutUploadedByInput
+  uploadedAlbums?: Prisma.AlbumCreateNestedManyWithoutUploadedByInput
+  playlists?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutSessionsInput = {
+  id?: string
+  email: string
+  username: string
+  displayName: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  mustChangePassword?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  uploadedTracks?: Prisma.TrackUncheckedCreateNestedManyWithoutUploadedByInput
+  uploadedAlbums?: Prisma.AlbumUncheckedCreateNestedManyWithoutUploadedByInput
+  playlists?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+}
+
+export type UserUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+}
+
+export type UserUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadedTracks?: Prisma.TrackUpdateManyWithoutUploadedByNestedInput
+  uploadedAlbums?: Prisma.AlbumUpdateManyWithoutUploadedByNestedInput
+  playlists?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  uploadedTracks?: Prisma.TrackUncheckedUpdateManyWithoutUploadedByNestedInput
+  uploadedAlbums?: Prisma.AlbumUncheckedUpdateManyWithoutUploadedByNestedInput
+  playlists?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
 export type UserCreateWithoutUploadedAlbumsInput = {
   id?: string
   email: string
@@ -550,6 +643,7 @@ export type UserCreateWithoutUploadedAlbumsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   uploadedTracks?: Prisma.TrackCreateNestedManyWithoutUploadedByInput
   playlists?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput
 }
@@ -566,6 +660,7 @@ export type UserUncheckedCreateWithoutUploadedAlbumsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   uploadedTracks?: Prisma.TrackUncheckedCreateNestedManyWithoutUploadedByInput
   playlists?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput
 }
@@ -598,6 +693,7 @@ export type UserUpdateWithoutUploadedAlbumsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   uploadedTracks?: Prisma.TrackUpdateManyWithoutUploadedByNestedInput
   playlists?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput
 }
@@ -614,6 +710,7 @@ export type UserUncheckedUpdateWithoutUploadedAlbumsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   uploadedTracks?: Prisma.TrackUncheckedUpdateManyWithoutUploadedByNestedInput
   playlists?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput
 }
@@ -630,6 +727,7 @@ export type UserCreateWithoutUploadedTracksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   uploadedAlbums?: Prisma.AlbumCreateNestedManyWithoutUploadedByInput
   playlists?: Prisma.PlaylistCreateNestedManyWithoutOwnerInput
 }
@@ -646,6 +744,7 @@ export type UserUncheckedCreateWithoutUploadedTracksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   uploadedAlbums?: Prisma.AlbumUncheckedCreateNestedManyWithoutUploadedByInput
   playlists?: Prisma.PlaylistUncheckedCreateNestedManyWithoutOwnerInput
 }
@@ -678,6 +777,7 @@ export type UserUpdateWithoutUploadedTracksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   uploadedAlbums?: Prisma.AlbumUpdateManyWithoutUploadedByNestedInput
   playlists?: Prisma.PlaylistUpdateManyWithoutOwnerNestedInput
 }
@@ -694,6 +794,7 @@ export type UserUncheckedUpdateWithoutUploadedTracksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   uploadedAlbums?: Prisma.AlbumUncheckedUpdateManyWithoutUploadedByNestedInput
   playlists?: Prisma.PlaylistUncheckedUpdateManyWithoutOwnerNestedInput
 }
@@ -710,6 +811,7 @@ export type UserCreateWithoutPlaylistsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   uploadedTracks?: Prisma.TrackCreateNestedManyWithoutUploadedByInput
   uploadedAlbums?: Prisma.AlbumCreateNestedManyWithoutUploadedByInput
 }
@@ -726,6 +828,7 @@ export type UserUncheckedCreateWithoutPlaylistsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   uploadedTracks?: Prisma.TrackUncheckedCreateNestedManyWithoutUploadedByInput
   uploadedAlbums?: Prisma.AlbumUncheckedCreateNestedManyWithoutUploadedByInput
 }
@@ -758,6 +861,7 @@ export type UserUpdateWithoutPlaylistsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   uploadedTracks?: Prisma.TrackUpdateManyWithoutUploadedByNestedInput
   uploadedAlbums?: Prisma.AlbumUpdateManyWithoutUploadedByNestedInput
 }
@@ -774,6 +878,7 @@ export type UserUncheckedUpdateWithoutPlaylistsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   uploadedTracks?: Prisma.TrackUncheckedUpdateManyWithoutUploadedByNestedInput
   uploadedAlbums?: Prisma.AlbumUncheckedUpdateManyWithoutUploadedByNestedInput
 }
@@ -784,12 +889,14 @@ export type UserUncheckedUpdateWithoutPlaylistsInput = {
  */
 
 export type UserCountOutputType = {
+  sessions: number
   uploadedTracks: number
   uploadedAlbums: number
   playlists: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   uploadedTracks?: boolean | UserCountOutputTypeCountUploadedTracksArgs
   uploadedAlbums?: boolean | UserCountOutputTypeCountUploadedAlbumsArgs
   playlists?: boolean | UserCountOutputTypeCountPlaylistsArgs
@@ -803,6 +910,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SessionWhereInput
 }
 
 /**
@@ -839,6 +953,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   uploadedTracks?: boolean | Prisma.User$uploadedTracksArgs<ExtArgs>
   uploadedAlbums?: boolean | Prisma.User$uploadedAlbumsArgs<ExtArgs>
   playlists?: boolean | Prisma.User$playlistsArgs<ExtArgs>
@@ -889,6 +1004,7 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "username" | "displayName" | "passwordHash" | "role" | "status" | "mustChangePassword" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   uploadedTracks?: boolean | Prisma.User$uploadedTracksArgs<ExtArgs>
   uploadedAlbums?: boolean | Prisma.User$uploadedAlbumsArgs<ExtArgs>
   playlists?: boolean | Prisma.User$playlistsArgs<ExtArgs>
@@ -900,6 +1016,7 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    sessions: Prisma.$SessionPayload<ExtArgs>[]
     uploadedTracks: Prisma.$TrackPayload<ExtArgs>[]
     uploadedAlbums: Prisma.$AlbumPayload<ExtArgs>[]
     playlists: Prisma.$PlaylistPayload<ExtArgs>[]
@@ -1310,6 +1427,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedTracks<T extends Prisma.User$uploadedTracksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedTracksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedAlbums<T extends Prisma.User$uploadedAlbumsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedAlbumsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlbumPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   playlists<T extends Prisma.User$playlistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playlistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1743,6 +1861,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.sessions
+ */
+export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Session
+   */
+  select?: Prisma.SessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Session
+   */
+  omit?: Prisma.SessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SessionInclude<ExtArgs> | null
+  where?: Prisma.SessionWhereInput
+  orderBy?: Prisma.SessionOrderByWithRelationInput | Prisma.SessionOrderByWithRelationInput[]
+  cursor?: Prisma.SessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
 }
 
 /**
