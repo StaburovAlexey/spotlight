@@ -2,6 +2,7 @@ import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.js";
+import { hash } from "argon2";
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   throw new Error("DATABASE_URL is required");
@@ -26,7 +27,7 @@ async function createStartAdmin() {
     console.log("A seed user with this email or username already exists");
     return;
   }
-
+  const passwordHash = await hash(ADMIN_PASSWORD);
   await prisma.user.create({
     data: {
       email: ADMIN_EMAIL,
@@ -34,7 +35,7 @@ async function createStartAdmin() {
       displayName: ADMIN_USERNAME,
       role: "ADMIN",
       mustChangePassword: false,
-      passwordHash: "hashed-password",
+      passwordHash: passwordHash,
     },
   });
 }
