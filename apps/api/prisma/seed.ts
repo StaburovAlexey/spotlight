@@ -39,14 +39,13 @@ async function createStartAdmin() {
     },
   });
 }
-createStartAdmin()
-  .then(async () => {
-    await prisma.$disconnect();
-    await pool.end();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    await pool.end();
-    process.exit(1);
-  });
+
+try {
+  await createStartAdmin();
+} catch (error) {
+  console.error(error);
+  process.exit(1);
+} finally {
+  await prisma.$disconnect();
+  await pool.end();
+}
