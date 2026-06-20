@@ -2,35 +2,26 @@ import type { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma.js";
 import { verify } from "argon2";
 import crypto from "node:crypto";
-
+import type { LoginRequest, LoginResponse, UserDto } from "@music-app/shared";
 import type { Session, User } from "../generated/prisma/client.js";
-type UserDto = Pick<
-  User,
-  | "id"
-  | "email"
-  | "username"
-  | "displayName"
-  | "status"
-  | "mustChangePassword"
-  | "role"
->;
+
+
+
 
 const loginSchema = {
   body: {
     type: "object",
     required: ["login", "password"],
+    additionalProperties: false,
     properties: {
-      login: { type: "string" },
-      password: { type: "string" },
+      login: { type: "string", minLength: 1 },
+      password: { type: "string", minLength: 1 },
     },
   },
 } as const;
 
-interface BodyLogin {
-  login: string;
-  password: string;
-}
-async function findUser(login: BodyLogin["login"]): Promise<User | null> {
+
+async function findUser(login: LoginRequest["login"]): Promise<User | null> {
   const existingUser = await prisma.user.findFirst({
     where: {
       OR: [{ email: login }, { username: login }],
@@ -40,7 +31,7 @@ async function findUser(login: BodyLogin["login"]): Promise<User | null> {
 }
 async function verifyPassword(
   passwordHash: User["passwordHash"],
-  password: BodyLogin["password"],
+  password: LoginRequest["password"],
 ) {
   const verifyPassword = await verify(passwordHash, password);
   return verifyPassword;
@@ -74,8 +65,11 @@ function userDto(user: User): UserDto {
   return { id, email, username, displayName, role, status, mustChangePassword };
 }
 export async function loginRoutes(app: FastifyInstance) {
-  app.post("/login", { schema: loginSchema }, async (request, reply) => {
-    const { login, password } = request.body as BodyLogin;
+  app.post<{
+    Body: LoginRequest;
+    Reply: LoginResponse;
+  }>("/login", { schema: loginSchema }, async (request, reply) => {
+    const { login, password } = request.body;
     const user = await findUser(login);
     if (!user) {
       return reply
@@ -94,7 +88,7 @@ export async function loginRoutes(app: FastifyInstance) {
         .send({ success: false, error: "User is disabled" });
     }
     const { token, tokenHash } = generateSessionToken();
-    const session = await createSession(user, tokenHash);
+    await createSession(user, tokenHash);
     reply.setCookie("session", token, {
       path: "/",
       httpOnly: true,

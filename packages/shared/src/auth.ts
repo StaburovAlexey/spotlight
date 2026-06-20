@@ -1,0 +1,9 @@
+import type { ApiResponse } from "./api.js";
+import type { UserDto } from "./user.js";
+
+export type LoginRequest = {
+  login: string;
+  password: string;
+};
+
+export type LoginResponse = ApiResponse<UserDto>;
