@@ -14,7 +14,7 @@ export function buildApp() {
     prefix: "/api",
   });
   app.register(loginRoutes, {
-    prefix: "/api",
+    prefix: "/api/auth/",
   });
 
   return app;

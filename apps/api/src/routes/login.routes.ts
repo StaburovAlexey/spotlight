@@ -1,12 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma.js";
 import { verify } from "argon2";
-import crypto from "node:crypto";
+import { generateSessionToken } from "../lib/auth/session-token.js";
+import { toUserDto } from "../lib/auth/to-user-dto.js";
 import type { LoginRequest, LoginResponse, UserDto } from "@music-app/shared";
 import type { Session, User } from "../generated/prisma/client.js";
-
-
-
 
 const loginSchema = {
   body: {
@@ -19,7 +17,6 @@ const loginSchema = {
     },
   },
 } as const;
-
 
 async function findUser(login: LoginRequest["login"]): Promise<User | null> {
   const existingUser = await prisma.user.findFirst({
@@ -40,12 +37,6 @@ function isDisabledUser(status: User["status"]) {
   return status === "DISABLED";
 }
 
-function generateSessionToken() {
-  const token = crypto.randomBytes(32).toString("hex");
-  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-  return { token, tokenHash };
-}
-
 async function createSession(user: User, tokenHash: string): Promise<Session> {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
@@ -59,11 +50,6 @@ async function createSession(user: User, tokenHash: string): Promise<Session> {
   return session;
 }
 
-function userDto(user: User): UserDto {
-  const { id, email, username, displayName, role, status, mustChangePassword } =
-    user;
-  return { id, email, username, displayName, role, status, mustChangePassword };
-}
 export async function loginRoutes(app: FastifyInstance) {
   app.post<{
     Body: LoginRequest;
@@ -98,7 +84,7 @@ export async function loginRoutes(app: FastifyInstance) {
     });
     reply.code(200).send({
       success: true,
-      data: userDto(user),
+      data: toUserDto(user),
     });
   });
 }

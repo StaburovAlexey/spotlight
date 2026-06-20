@@ -7,3 +7,5 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = ApiResponse<UserDto>;
+
+export type MeResponse = ApiResponse<UserDto>;
