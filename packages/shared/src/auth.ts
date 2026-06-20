@@ -6,7 +6,7 @@ export type LoginRequest = {
   password: string;
 };
 
-export type LoginResponse = ApiResponse<UserDto>;
+export type wLoginResponse = ApiResponse<UserDto>;
 
 export type MeResponse = ApiResponse<UserDto>;
 
