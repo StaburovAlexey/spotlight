@@ -11,18 +11,18 @@
     "dev:down": "docker compose down",
     "dev:logs": "docker compose logs -f",
     "dev:reset": "docker compose down -v",
-
     "shared:build": "npm run build -w @music-app/shared",
     "shared:typecheck": "npm run typecheck -w @music-app/shared",
-
     "web:dev": "npm run dev -w @music-app/web",
     "web:build": "npm run build -w @music-app/web",
     "web:typecheck": "npm run typecheck -w @music-app/web",
-
     "api:dev": "npm run dev -w @music-app/api",
     "api:build": "npm run build -w @music-app/api",
     "api:typecheck": "npm run typecheck -w @music-app/api",
-
+    "studio": "npm run db:studio -w @music-app/api",
+    "is-valid-scheme": "npm exec -w @music-app/api -- prisma validate",
+    "create-migration": "npm run db:migrate -w @music-app/api",
+    "create-client": "npm run db:generate -w @music-app/api",
     "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
