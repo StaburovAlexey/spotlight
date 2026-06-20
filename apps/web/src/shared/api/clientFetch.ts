@@ -20,10 +20,10 @@ function createParams(params: Params): URLSearchParams {
   return searchParams;
 }
 
-export async function apiClient<T, B = unknown>(
+export async function apiClient<R, B = unknown>(
   url: string,
   { method = "GET", body, params }: ApiClientOptions<B> = {},
-): Promise<ApiResponse<T>> {
+): Promise<ApiResponse<R>> {
   let path = url;
 
   if (params) {
@@ -44,5 +44,5 @@ export async function apiClient<T, B = unknown>(
 
   const response = await fetch(path, fetchOptions);
 
-  return response.json() as Promise<ApiResponse<T>>;
+  return response.json() as Promise<ApiResponse<R>>;
 }
