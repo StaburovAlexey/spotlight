@@ -21,3 +21,5 @@ storage/music/temp/*
 !storage/music/covers/albums/.gitkeep
 !storage/music/covers/tracks/.gitkeep
 !storage/music/temp/.gitkeep
+
+cookies.txt

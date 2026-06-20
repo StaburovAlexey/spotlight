@@ -1,4 +1,4 @@
-import type { ApiResponse } from "./api.js";
+import type { ApiResponse, ApiSuccessResponse } from "./api.js";
 import type { UserDto } from "./user.js";
 
 export type LoginRequest = {
@@ -9,3 +9,7 @@ export type LoginRequest = {
 export type LoginResponse = ApiResponse<UserDto>;
 
 export type MeResponse = ApiResponse<UserDto>;
+
+export type LogoutResponse = ApiSuccessResponse<{
+  ok: true;
+}>;

@@ -2,23 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { hashSessionToken } from "./session-token.js";
 import { prisma } from "../prisma.js";
 import { sendApiError } from "../http/send-api-error.js";
-import type { Prisma } from "../../generated/prisma/client.js";
-import type { Session, User } from "../../generated/prisma/client.js";
-
-type SessionWithUser = Prisma.SessionGetPayload<{
-  include: {
-    user: true;
-  };
-}>;
-
-async function getSession(token: string): Promise<SessionWithUser | null> {
-  const tokenHash = hashSessionToken(token);
-  const session = await prisma.session.findUnique({
-    where: { tokenHash },
-    include: { user: true },
-  });
-  return session;
-}
+import { getSession, type SessionWithUser } from "./session-token.js";
 
 function isSessionInvalid(session: SessionWithUser): boolean {
   return session.revokedAt !== null || session.expiresAt <= new Date();
@@ -48,7 +32,7 @@ export async function requiredAuth(
     sendApiError(reply, 403, "User is disabled");
     return;
   }
-  
+
   request.currentSession = session;
   request.currentUser = session.user;
 }
