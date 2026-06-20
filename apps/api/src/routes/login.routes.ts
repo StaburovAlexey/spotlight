@@ -3,7 +3,7 @@ import { prisma } from "../lib/prisma.js";
 import { verify } from "argon2";
 import { generateSessionToken } from "../lib/auth/session-token.js";
 import { toUserDto } from "../lib/auth/to-user-dto.js";
-import type { LoginRequest, LoginResponse, UserDto } from "@music-app/shared";
+import type { LoginRequest, LoginResponse } from "@music-app/shared";
 import type { Session, User } from "../generated/prisma/client.js";
 
 const loginSchema = {

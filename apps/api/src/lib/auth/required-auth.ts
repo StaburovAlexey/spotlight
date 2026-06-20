@@ -20,15 +20,8 @@ async function getSession(token: string): Promise<SessionWithUser | null> {
   return session;
 }
 
-function checkSession(session: SessionWithUser, reply: FastifyReply) {
-  if (session.revokedAt !== null || session.expiresAt <= new Date()) {
-    sendApiError(reply, 401, "The session has expired. Please log in again.");
-    return;
-  }
-  if (session.user.status === "DISABLED") {
-    sendApiError(reply, 403, "User is disabled");
-    return;
-  }
+function isSessionInvalid(session: SessionWithUser): boolean {
+  return session.revokedAt !== null || session.expiresAt <= new Date();
 }
 export async function requiredAuth(
   request: FastifyRequest,
@@ -46,7 +39,16 @@ export async function requiredAuth(
     return;
   }
 
-  checkSession(session, reply);
+  if (isSessionInvalid(session)) {
+    sendApiError(reply, 401, "The session has expired. Please log in again.");
+    return;
+  }
+
+  if (session.user.status === "DISABLED") {
+    sendApiError(reply, 403, "User is disabled");
+    return;
+  }
+  
   request.currentSession = session;
   request.currentUser = session.user;
 }
