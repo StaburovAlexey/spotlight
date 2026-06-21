@@ -1,97 +1,119 @@
-import { Button, Card, Chip } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { Card, Chip } from "@heroui/react";
+import { Disc3, Mic2 } from "lucide-react";
+
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./HomePage.module.css";
-import { useCurrentUser } from "../../features/auth/hooks/use-current-user";
+
+const recentlyUploaded = [
+  {
+    title: "Midnight Signals",
+    subtitle: "Nova Arc",
+    meta: "Альбом",
+    tone: "green",
+  },
+  {
+    title: "Low Light",
+    subtitle: "Echo Room",
+    meta: "Трек",
+    tone: "violet",
+  },
+  {
+    title: "Static Bloom",
+    subtitle: "Mira Vale",
+    meta: "EP",
+    tone: "blue",
+  },
+  {
+    title: "Northbound",
+    subtitle: "The Current",
+    meta: "Альбом",
+    tone: "amber",
+  },
+];
+
+const recentlyPlayed = [
+  {
+    title: "Afterimage",
+    subtitle: "Lumen Field",
+    meta: "Сегодня",
+    tone: "blue",
+  },
+  {
+    title: "Soft Machines",
+    subtitle: "Kite Valley",
+    meta: "Вчера",
+    tone: "green",
+  },
+  {
+    title: "Glass Avenue",
+    subtitle: "Noon State",
+    meta: "3 дня назад",
+    tone: "amber",
+  },
+  {
+    title: "Parallel Lines",
+    subtitle: "Arden",
+    meta: "На неделе",
+    tone: "violet",
+  },
+];
 
 export function HomePage() {
-  const currentUserQuery = useCurrentUser();
-
-  console.log(currentUserQuery.data);
-  const [apiStatus, setApiStatus] = useState<"idle" | "ok" | "error">("idle");
-
-  useEffect(() => {
-    fetch("/api/health")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("API request failed");
-        }
-
-        return response.json() as Promise<{ status: string }>;
-      })
-      .then((data) => {
-        setApiStatus(data.status === "ok" ? "ok" : "error");
-      })
-      .catch(() => {
-        setApiStatus("error");
-      });
-  }, []);
   return (
-    <main className={styles.page}>
-      <section className={styles.hero}>
-        <p>API status: {apiStatus}</p>
-        <Chip variant="primary">Self-hosted music app</Chip>
+    <section className={styles.page}>
+      <section className={styles.shelf} aria-labelledby="recently-uploaded">
+        <div className={styles.shelfHeader}>
+          <div>
+            <p className={styles.eyebrow}>Новые файлы</p>
+            <h2 className={styles.sectionTitle} id="recently-uploaded">
+              Недавно загруженные
+            </h2>
+          </div>
+          <Disc3 className={styles.sectionIcon} size={22} />
+        </div>
 
-        <h1 className={styles.title}>Твоя музыкальная библиотека</h1>
-
-        <p className={styles.description}>
-          Загружай треки и альбомы, слушай музыку в браузере и собирай свои
-          плейлисты.
-        </p>
-
-        <div className={styles.actions}>
-          <Button variant="secondary">Открыть библиотеку</Button>
-
-          <Button variant="secondary">Загрузить музыку</Button>
+        <div className={styles.scroller}>
+          {recentlyUploaded.map((item) => (
+            <Card key={item.title} className={classNames(styles.mediaCard)}>
+              <Card.Content>
+                <div className={classNames(styles.cover, styles[item.tone])} />
+                <div className={styles.mediaInfo}>
+                  <h3 className={styles.mediaTitle}>{item.title}</h3>
+                  <p className={styles.mediaSubtitle}>{item.subtitle}</p>
+                  <p className={styles.mediaMeta}>{item.meta}</p>
+                </div>
+              </Card.Content>
+            </Card>
+          ))}
         </div>
       </section>
 
-      <section className={styles.grid}>
-        <Card variant="secondary">
-          <Card.Header>
-            <Card.Title className={classNames(styles.cardTitle)}>
-              Библиотека
-            </Card.Title>
-          </Card.Header>
+      <section className={styles.shelf} aria-labelledby="recently-played">
+        <div className={styles.shelfHeader}>
+          <div>
+            <p className={styles.eyebrow}>История</p>
+            <h2 className={styles.sectionTitle} id="recently-played">
+              Недавно прослушанные
+            </h2>
+          </div>
+          <Mic2 className={styles.sectionIcon} size={22} />
+        </div>
 
-          <Card.Content>
-            <p className={styles.cardText}>
-              Общий каталог треков, альбомов и исполнителей для всех
-              пользователей.
-            </p>
-          </Card.Content>
-        </Card>
-
-        <Card variant="default">
-          <Card.Header>
-            <Card.Title className={classNames(styles.cardTitle)}>
-              Плейлисты
-            </Card.Title>
-          </Card.Header>
-
-          <Card.Content>
-            <p className={styles.cardText}>
-              Каждый пользователь сможет создавать и сохранять собственные
-              плейлисты.
-            </p>
-          </Card.Content>
-        </Card>
-
-        <Card variant="transparent">
-          <Card.Header>
-            <Card.Title className={classNames(styles.cardTitle)}>
-              Админка
-            </Card.Title>
-          </Card.Header>
-
-          <Card.Content>
-            <p className={styles.cardText}>
-              Пользователей создает админ. Публичной регистрации в приложении не
-              будет.
-            </p>
-          </Card.Content>
-        </Card>
+        <div className={styles.scroller}>
+          {recentlyPlayed.map((item) => (
+            <Card key={item.title} className={classNames(styles.mediaCard)}>
+              <Card.Content>
+                <div className={classNames(styles.cover, styles[item.tone])} />
+                <div className={styles.mediaInfo}>
+                  <h3 className={styles.mediaTitle}>{item.title}</h3>
+                  <p className={styles.mediaSubtitle}>{item.subtitle}</p>
+                  <p className={styles.mediaMeta}>{item.meta}</p>
+                </div>
+              </Card.Content>
+            </Card>
+          ))}
+        </div>
       </section>
-    </main>
+    </section>
   );
 }

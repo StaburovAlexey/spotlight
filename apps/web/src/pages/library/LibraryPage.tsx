@@ -12,14 +12,6 @@ const mockAlbums = [
 export function LibraryPage() {
   return (
     <section className={styles.page}>
-      <header className={styles.header}>
-        <p className={styles.eyebrow}>Библиотека</p>
-        <h1 className={styles.title}>Музыка</h1>
-        <p className={styles.description}>
-          Здесь позже появятся загруженные треки, альбомы и исполнители.
-        </p>
-      </header>
-
       <div className={styles.grid}>
         {mockAlbums.map((album) => (
           <Card key={album}>
