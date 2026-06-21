@@ -1,16 +1,34 @@
 import { Button, Card, Chip } from "@heroui/react";
-
+import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../../features/auth/hooks/use-current-user";
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./SettingsPage.module.css";
 import { SettingsHeaderPage } from "./SettingsHeaderPage";
+import { useLogout } from "../../features/auth/hooks/use-logout";
 
 export function SettingsUserPage() {
   const { data: user } = useCurrentUser();
+  const logoutMutation = useLogout();
+  const navigate = useNavigate();
+  async function handleExit() {
+    const response = await logoutMutation.mutateAsync();
 
+    if (!response.success) {
+      console.log(response.error);
+      return;
+    } else {
+      navigate("/hello");
+    }
+
+    console.log("Logged in:", response.data);
+  }
   return (
     <section className={styles.page}>
-      <SettingsHeaderPage name="Пользователь" title='Аккаунт и сессия' discription="Данные текущего пользователя берутся из активной сессии." />
+      <SettingsHeaderPage
+        name="Пользователь"
+        title="Аккаунт и сессия"
+        discription="Данные текущего пользователя берутся из активной сессии."
+      />
 
       <div className={styles.grid}>
         <Card>
@@ -49,6 +67,9 @@ export function SettingsUserPage() {
               <div className={styles.actions}>
                 <Button variant="secondary" isDisabled>
                   Сохранить
+                </Button>
+                <Button variant="danger-soft" onClick={() => handleExit()}>
+                  Выйти из аккаунта
                 </Button>
               </div>
             </div>

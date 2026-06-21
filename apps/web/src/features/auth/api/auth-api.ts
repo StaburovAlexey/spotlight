@@ -12,5 +12,8 @@ export async function getMe() {
 }
 
 export async function logout() {
-  return apiClient<{ ok: true }>("/api/auth/logout", { method: "POST" });
+  return apiClient<{ ok: true }>("/api/auth/logout", {
+    method: "POST",
+    body: {},
+  });
 }

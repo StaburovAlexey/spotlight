@@ -1,4 +1,3 @@
-// apps/web/src/features/auth/hooks/use-login.ts
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { LoginRequest } from "@music-app/shared";
