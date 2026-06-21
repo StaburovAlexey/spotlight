@@ -1,7 +1,5 @@
 .layout {
   min-height: 100vh;
-  background: var(--background);
-  color: var(--foreground);
 }
 
 .sidebar {
@@ -10,7 +8,8 @@
 
 .main {
   min-height: 100vh;
-  padding-bottom: 76px;
+  /* padding-bottom: 76px; */
+  padding: 24px 24px 100px 24px;
 }
 
 .bottomNav {

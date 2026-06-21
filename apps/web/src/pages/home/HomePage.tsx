@@ -2,9 +2,12 @@ import { Button, Card, Chip } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./HomePage.module.css";
-
+import { useCurrentUser } from "../../features/auth/hooks/use-current-user";
 
 export function HomePage() {
+  const currentUserQuery = useCurrentUser();
+
+  console.log(currentUserQuery.data);
   const [apiStatus, setApiStatus] = useState<"idle" | "ok" | "error">("idle");
 
   useEffect(() => {

@@ -1,10 +1,4 @@
-.page {
-  padding: 24px;
-  background:
-    radial-gradient(circle at top, color-mix(in oklch, var(--primary) 20%, transparent), transparent 32rem),
-    var(--background);
-  color: var(--foreground);
-}
+
 
 .hero {
   max-width: 720px;

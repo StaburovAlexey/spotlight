@@ -3,7 +3,6 @@
   min-height: 100vh;
   place-items: center;
   padding: 24px;
-  background: var(--background);
   text-align: center;
 }
 
