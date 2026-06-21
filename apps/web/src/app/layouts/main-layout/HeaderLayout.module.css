@@ -1,5 +1,14 @@
 .header {
-  margin: 0 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  margin: 0 calc(var(--page-x) / -2) 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-large);
+  background: color-mix(in oklch, var(--content1) 90%, transparent);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
 }
 .nameBtn {
   display: inline-flex;
@@ -34,4 +43,11 @@
   margin: 16px 0 0;
   color: #a1a1aa;
   line-height: 1.6;
+}
+
+@media (min-width: 900px) {
+  .header {
+    margin-right: 0;
+    margin-left: 0;
+  }
 }

@@ -1,15 +1,21 @@
 import { NavLink, Outlet, Navigate } from "react-router-dom";
-import { Home, Library, Settings } from "lucide-react";
+import { Home, Library, Search, Settings } from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks/use-current-user";
 import { LoadingScreen } from "../../../shared/ui/LoadingScreen";
 
 import styles from "./MainLayout.module.css";
+import { HeaderLayout } from "./HeaderLayout";
 
 const navItems = [
   {
     to: "/",
     label: "Главная",
     icon: Home,
+  },
+  {
+    to: "/search",
+    label: "Поиск",
+    icon: Search,
   },
   {
     to: "/library",
@@ -24,7 +30,9 @@ const navItems = [
 ];
 
 export function MainLayout() {
+
   const { data: user, isLoading } = useCurrentUser();
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -61,6 +69,7 @@ export function MainLayout() {
       </aside>
 
       <main className={styles.main}>
+        <HeaderLayout />
         <Outlet />
       </main>
 

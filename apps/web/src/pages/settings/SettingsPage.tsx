@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./SettingsPage.module.css";
-import { SettingsHeaderPage } from "./SettingsHeaderPage";
+
 
 const settingsGroups = [
   {
@@ -26,13 +26,6 @@ const settingsGroups = [
 export function SettingsPage() {
   return (
     <section className={styles.page}>
-      <SettingsHeaderPage
-        name="Настройки"
-        title="Разделы настроек"
-        discription="Выбери группу, чтобы открыть отдельную страницу параметров."
-        viewBack={false}
-      />
-
       <div className={styles.groupGrid}>
         {settingsGroups.map((group) => {
           const Icon = group.icon;

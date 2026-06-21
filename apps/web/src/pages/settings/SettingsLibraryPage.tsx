@@ -3,18 +3,10 @@ import { Link } from "react-router-dom";
 
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./SettingsPage.module.css";
-import { SettingsHeaderPage } from "./SettingsHeaderPage";
 
 export function SettingsLibraryPage() {
   return (
     <section className={styles.page}>
-      <SettingsHeaderPage
-        name="Библиотека"
-        title="Музыкальный каталог"
-        discription="Параметры импорта и обработки музыки будут подключаться к backend по
-          мере развития библиотеки."
-      />
-
       <div className={styles.grid}>
         <Card>
           <Card.Header>

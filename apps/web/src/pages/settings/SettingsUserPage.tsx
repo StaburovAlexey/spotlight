@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../../features/auth/hooks/use-current-user";
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./SettingsPage.module.css";
-import { SettingsHeaderPage } from "./SettingsHeaderPage";
+
 import { useLogout } from "../../features/auth/hooks/use-logout";
 
 export function SettingsUserPage() {
@@ -24,12 +24,6 @@ export function SettingsUserPage() {
   }
   return (
     <section className={styles.page}>
-      <SettingsHeaderPage
-        name="Пользователь"
-        title="Аккаунт и сессия"
-        discription="Данные текущего пользователя берутся из активной сессии."
-      />
-
       <div className={styles.grid}>
         <Card>
           <Card.Header>
