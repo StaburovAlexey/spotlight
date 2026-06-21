@@ -1,6 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { Home, Library, Settings } from "lucide-react";
-
+import { useCurrentUser } from "../../../features/auth/hooks/use-current-user";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import styles from "./MainLayout.module.css";
 
 const navItems = [
@@ -22,6 +24,23 @@ const navItems = [
 ];
 
 export function MainLayout() {
+  const navigate = useNavigate();
+  const { data: user, isLoading } = useCurrentUser();
+  useEffect(() => {
+    // Проверяем условие ТОЛЬКО когда загрузка завершена и пользователя нет
+    if (!isLoading && !user) {
+      navigate("/hello");
+    }
+  }, [user, isLoading, navigate]);
+
+  if (isLoading) {
+    return "Загрузка";
+  }
+
+  // Если пользователя нет, пока срабатывает useEffect, отдаем null или заглушку
+  if (!user) {
+    return null;
+  }
   return (
     <div className={styles.layout}>
       <aside className={styles.sidebar} aria-label="Основная навигация">
@@ -52,7 +71,7 @@ export function MainLayout() {
       <main className={styles.main}>
         <Outlet />
       </main>
-        
+
       <nav className={styles.bottomNav} aria-label="Мобильная навигация">
         {navItems.map((item) => {
           const Icon = item.icon;

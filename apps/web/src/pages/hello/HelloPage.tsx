@@ -1,10 +1,11 @@
 import { Button, Card, Chip } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { classNames } from "../../shared/lib/classNames";
-import styles from "./HomePage.module.css";
+import styles from "./HelloPage.module.css";
+import { useNavigate } from "react-router-dom";
 
-
-export function HomePage() {
+export function HelloPage() {
+  const navigate = useNavigate();
   const [apiStatus, setApiStatus] = useState<"idle" | "ok" | "error">("idle");
 
   useEffect(() => {
@@ -37,9 +38,9 @@ export function HomePage() {
         </p>
 
         <div className={styles.actions}>
-          <Button variant="secondary">Открыть библиотеку</Button>
-
-          <Button variant="secondary">Загрузить музыку</Button>
+          <Button variant="secondary" onClick={() => navigate("/login")}>
+            Войти
+          </Button>
         </div>
       </section>
 
