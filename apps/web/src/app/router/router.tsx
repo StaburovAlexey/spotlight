@@ -7,6 +7,9 @@ import { LibraryPage } from "../../pages/library/LibraryPage";
 import { LoginPage } from "../../pages/login/LoginPage";
 import { NotFoundPage } from "../../pages/not-found/NotFoundPage";
 import { HelloPage } from "../../pages/hello/HelloPage";
+import { SettingsPage } from "../../pages/settings/SettingsPage";
+import { SettingsLibraryPage } from "../../pages/settings/SettingsLibraryPage";
+import { SettingsUserPage } from "../../pages/settings/SettingsUserPage";
 export const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -23,6 +26,23 @@ export const router = createBrowserRouter([
       {
         path: "/admin/users",
         element: <AdminUsersPage />,
+      },
+      {
+        path: "/settings",
+        children: [
+          {
+            index: true,
+            element: <SettingsPage />,
+          },
+          {
+            path: "user",
+            element: <SettingsUserPage />,
+          },
+          {
+            path: "lib",
+            element: <SettingsLibraryPage />,
+          },
+        ],
       },
     ],
   },

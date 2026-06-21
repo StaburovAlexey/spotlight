@@ -1,6 +1,7 @@
 import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { Home, Library, Settings } from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks/use-current-user";
+import { LoadingScreen } from "../../../shared/ui/LoadingScreen";
 
 import styles from "./MainLayout.module.css";
 
@@ -16,8 +17,8 @@ const navItems = [
     icon: Library,
   },
   {
-    to: "/admin/users",
-    label: "Админка",
+    to: "/settings",
+    label: "Настройки",
     icon: Settings,
   },
 ];
@@ -25,7 +26,7 @@ const navItems = [
 export function MainLayout() {
   const { data: user, isLoading } = useCurrentUser();
   if (isLoading) {
-    return "Загрузка";
+    return <LoadingScreen />;
   }
 
   if (!user) {

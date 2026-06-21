@@ -1,4 +1,4 @@
-import { Button, Card, Input } from "@heroui/react";
+import { Button, Card, Input, Spinner } from "@heroui/react";
 import { classNames } from "../../shared/lib/classNames";
 import styles from "./LoginPage.module.css";
 import { useState } from "react";
@@ -9,7 +9,6 @@ export function LoginPage() {
   const loginMutation = useLogin();
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement>,
     set: React.Dispatch<React.SetStateAction<string>>,
@@ -65,8 +64,17 @@ export function LoginPage() {
               autoComplete="current-password"
             />
 
-            <Button variant="primary" type="submit">
-              Войти
+            <Button
+              variant="primary"
+              type="submit"
+              isPending={loginMutation.isPending}
+            >
+              {({ isPending }) => (
+                <>
+                  {isPending ? <Spinner color="current" size="sm" /> : null}
+                  {isPending ? "Входим" : "Войти"}
+                </>
+              )}
             </Button>
           </form>
         </Card.Content>

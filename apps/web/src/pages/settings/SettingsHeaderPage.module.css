@@ -1,0 +1,37 @@
+.header {
+  margin: 0 0 28px;
+}
+.nameBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  color: #1ed760;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+/* .eyebrow {
+  margin: 0;
+  color: #1ed760;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+} */
+
+.title {
+  margin: 8px 0 0;
+  font-size: clamp(2rem, 8vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.description {
+  max-width: 620px;
+  margin: 16px 0 0;
+  color: #a1a1aa;
+  line-height: 1.6;
+}
