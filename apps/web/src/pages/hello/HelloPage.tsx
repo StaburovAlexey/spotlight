@@ -27,7 +27,6 @@ export function HelloPage() {
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
-        <p>API status: {apiStatus}</p>
         <Chip variant="primary">Self-hosted music app</Chip>
 
         <h1 className={styles.title}>Твоя музыкальная библиотека</h1>

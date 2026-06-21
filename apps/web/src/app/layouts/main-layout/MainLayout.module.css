@@ -1,5 +1,6 @@
 .layout {
-  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -7,20 +8,21 @@
 }
 
 .main {
-  min-height: 100vh;
-  /* padding-bottom: 76px; */
-  padding: 24px 24px 100px 24px;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px var(--page-x) calc(100px + env(safe-area-inset-bottom));
 }
 
 .bottomNav {
   position: fixed;
   right: 12px;
-  bottom: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
   left: 12px;
   z-index: 20;
 
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
 
   padding: 6px;
@@ -34,6 +36,7 @@
 .bottomNavLink {
   display: flex;
   min-height: 52px;
+  min-width: 0;
   align-items: center;
   justify-content: center;
   gap: 4px;
@@ -42,8 +45,15 @@
   border-radius: 18px;
 
   color: #a1a1aa;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   text-decoration: none;
+}
+
+.bottomNavLink span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .bottomNavLinkActive {
@@ -62,7 +72,7 @@
     top: 0;
 
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     flex-direction: column;
     gap: 24px;
 
@@ -109,6 +119,7 @@
 
   .main {
     min-width: 0;
+    height: 100dvh;
     padding-bottom: 0;
   }
 

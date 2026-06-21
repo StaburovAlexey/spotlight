@@ -1,13 +1,14 @@
 .page {
-  padding: 24px;
-
- 
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--page-x) var(--page-x) calc(var(--page-x) + env(safe-area-inset-bottom));
 }
 
 .hero {
   max-width: 720px;
   margin: 0 auto;
-  padding: 48px 0 32px;
+  padding: 0 0 32px;
 }
 
 .title {
