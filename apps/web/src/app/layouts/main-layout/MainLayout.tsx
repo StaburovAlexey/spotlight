@@ -30,14 +30,13 @@ const navItems = [
 ];
 
 export function MainLayout() {
+  const { data: user, isPending, isError } = useCurrentUser();
 
-  const { data: user, isLoading } = useCurrentUser();
-
-  if (isLoading) {
+  if (isPending) {
     return <LoadingScreen />;
   }
 
-  if (!user) {
+  if (isError || !user) {
     return <Navigate to="/hello" replace />;
   }
 
