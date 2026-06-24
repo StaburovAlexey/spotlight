@@ -1,5 +1,7 @@
 import { parseFile } from "music-metadata";
 
+export type AudioMetadata = Awaited<ReturnType<typeof readAudioMetadata>>;
+
 export async function readAudioMetadata(filePath: string) {
   const metadata = await parseFile(filePath);
 
@@ -17,5 +19,5 @@ export async function readAudioMetadata(filePath: string) {
     container: metadata.format.container ?? null,
     codec: metadata.format.codec ?? null,
     bitrate: metadata.format.bitrate ?? null,
-  };
+  } as const;
 }

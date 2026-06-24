@@ -12,21 +12,22 @@ import {
 } from "./storage-path.js";
 import { readAudioMetadata } from "../audio/read-audio-metadata.js";
 import type { MultipartFile } from "@fastify/multipart";
+import type { AudioMetadata } from "../audio/read-audio-metadata.js";
 
-type TemporarySavedFile = {
+export type TemporarySavedFile = {
   storageKey: string;
   absolutePath: string;
   originalFileName: string;
   mimeType: string;
   sha256: string;
   sizeBytes: bigint;
+  meta: AudioMetadata;
 };
 
 export async function saveTemporaryFile(
   file: MultipartFile,
 ): Promise<TemporarySavedFile> {
   const tmpDir = getStoragePath();
-
 
   await mkdir(tmpDir, { recursive: true });
 
@@ -57,6 +58,6 @@ export async function saveTemporaryFile(
     sizeBytes,
     originalFileName: file.filename,
     mimeType: file.mimetype,
-    meta: metadata
+    meta: metadata,
   };
 }

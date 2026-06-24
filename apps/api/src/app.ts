@@ -6,7 +6,7 @@ import { healthRoutes } from "./routes/health.routes.js";
 import { loginRoutes } from "./routes/login.routes.js";
 import { meRoute } from "./routes/me.routes.js";
 import { logoutRoutes } from "./routes/logout.routes.js";
-import { uploadTracks } from "./routes/tracks.routes.js";
+import { uploadTracksRoute, getTracksRoute } from "./routes/tracks.routes.js";
 export function buildApp() {
   const app = fastify({
     logger: true,
@@ -23,6 +23,7 @@ export function buildApp() {
   app.register(meRoute, { prefix: "/api/auth" });
   app.register(logoutRoutes, { prefix: "/api/auth" });
 
-  app.register(uploadTracks, { prefix: "/api/tracks" });
+  app.register(uploadTracksRoute, { prefix: "/api/tracks" });
+  app.register(getTracksRoute, { prefix: "/api/tracks" });
   return app;
 }
