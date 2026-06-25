@@ -1,6 +1,6 @@
 import { createWriteStream } from "node:fs";
 import { Transform } from "node:stream";
-import { mkdir, rename } from "node:fs/promises";
+import { mkdir, rename, access } from "node:fs/promises";
 import { pipeline } from "node:stream/promises";
 import path from "node:path";
 import crypto from "node:crypto";
@@ -22,7 +22,31 @@ export type TemporarySavedFile = {
   sha256: string;
   sizeBytes: bigint;
   meta: AudioMetadata;
+  tmpPath: string;
 };
+
+export async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function commitUploadedFileToPath(
+  file: TemporarySavedFile,
+  targetPath: string,
+): Promise<void> {
+  await mkdir(path.dirname(targetPath), { recursive: true });
+  await rename(file.tmpPath, targetPath);
+}
+export async function commitUploadedFile(
+  file: TemporarySavedFile,
+): Promise<void> {
+  await mkdir(path.dirname(file.absolutePath), { recursive: true });
+  await rename(file.tmpPath, file.absolutePath);
+}
 
 export async function saveTemporaryFile(
   file: MultipartFile,
@@ -48,10 +72,9 @@ export async function saveTemporaryFile(
   const extension = getFileExtension(file.filename);
   const storageKey = buildOriginalStorageKey(sha256, extension);
   const finalPath = resolveStoragePath(storageKey);
-  await mkdir(path.dirname(finalPath), { recursive: true });
-  await rename(tmpPath, finalPath);
-  const metadata = await readAudioMetadata(finalPath);
+  const metadata = await readAudioMetadata(tmpPath);
   return {
+    tmpPath,
     storageKey,
     absolutePath: finalPath,
     sha256,

@@ -6,10 +6,48 @@ import {
   saveTemporaryFile,
   type TemporarySavedFile,
 } from "../lib/storage/save-uploaded-file.js";
+import {
+  commitUploadedFile,
+  commitUploadedFileToPath,
+  fileExists,
+} from "../lib/storage/save-uploaded-file.js";
 import type { ApiResponse } from "@music-app/shared";
-import type { Album, Artist, Track } from "../generated/prisma/client.js";
+import type {
+  Album,
+  Artist,
+  Track,
+  Prisma,
+} from "../generated/prisma/client.js";
 import type { TrackDto } from "@music-app/shared";
 import { toTrackDto } from "../lib/audio/to-track-dto.js";
+import { rm } from "node:fs/promises";
+import { resolveStoragePath } from "../lib/storage/storage-path.js";
+import type { FastifyRequest } from "fastify";
+
+type DbClient = Prisma.TransactionClient;
+
+async function safeRemoveTmpFile(
+  file: TemporarySavedFile,
+  request: FastifyRequest,
+): Promise<void> {
+  try {
+    await rm(file.tmpPath, { force: true });
+  } catch (error) {
+    request.log.error(error, "Failed to cleanup tmp uploaded file");
+  }
+}
+
+async function safeRemoveFinalFile(
+  file: TemporarySavedFile,
+  request: FastifyRequest,
+): Promise<void> {
+  try {
+    await rm(file.absolutePath, { force: true });
+  } catch (error) {
+    request.log.error(error, "Failed to cleanup final uploaded file");
+  }
+}
+
 async function findTrackBySha256(sha256: string) {
   const existingTrack = await prisma.track.findUnique({
     where: { sha256: sha256 },
@@ -17,8 +55,8 @@ async function findTrackBySha256(sha256: string) {
   return existingTrack;
 }
 
-async function findOrCreateArtist(name: string): Promise<Artist> {
-  const existingArtist = await prisma.artist.findFirst({
+async function findOrCreateArtist(db: DbClient, name: string): Promise<Artist> {
+  const existingArtist = await db.artist.findFirst({
     where: {
       name,
       deletedAt: null,
@@ -29,7 +67,7 @@ async function findOrCreateArtist(name: string): Promise<Artist> {
     return existingArtist;
   }
 
-  return prisma.artist.create({
+  return db.artist.create({
     data: {
       name,
     },
@@ -37,15 +75,16 @@ async function findOrCreateArtist(name: string): Promise<Artist> {
 }
 
 async function findOrCreateAlbum(
+  db: DbClient,
   artistId: string,
   title: string,
   uploadedById: string,
 ): Promise<Album> {
-  const existingAlbum = await prisma.album.findFirst({
+  const existingAlbum = await db.album.findFirst({
     where: { artistId, title },
   });
   if (existingAlbum) return existingAlbum;
-  return prisma.album.create({
+  return db.album.create({
     data: {
       title,
       artistId,
@@ -55,6 +94,7 @@ async function findOrCreateAlbum(
 }
 
 async function createTrack(
+  db: DbClient,
   temporaryFile: TemporarySavedFile,
   albumId: string | null,
   artistId: string | null,
@@ -68,7 +108,7 @@ async function createTrack(
   const mimeType = temporaryFile.mimeType;
   const sizeBytes = temporaryFile.sizeBytes;
   const sha256 = temporaryFile.sha256;
-  const track = await prisma.track.create({
+  const track = await db.track.create({
     data: {
       title,
       durationSeconds,
@@ -89,52 +129,84 @@ async function chainTracks(
   temporaryFile: TemporarySavedFile,
   uploadedById: string,
 ): Promise<Track> {
-  const metaNameArtist =
-    temporaryFile.meta?.artist ?? temporaryFile.meta?.albumArtist ?? null;
-  const metaAlbumName = temporaryFile.meta.album ?? "";
-  const artist = metaNameArtist
-    ? await findOrCreateArtist(metaNameArtist)
-    : null;
-  const album = artist
-    ? await findOrCreateAlbum(artist.id, metaAlbumName, uploadedById)
-    : null;
-  const albumId = album?.id ?? null;
-  const artistId = artist?.id ?? null;
-  const track = await createTrack(
-    temporaryFile,
-    albumId,
-    artistId,
-    uploadedById,
-  );
+  return prisma.$transaction(async (tx) => {
+    const metaNameArtist =
+      temporaryFile.meta?.artist ?? temporaryFile.meta?.albumArtist ?? null;
+    const metaAlbumName = temporaryFile.meta.album ?? "";
+    const artist = metaNameArtist
+      ? await findOrCreateArtist(tx, metaNameArtist)
+      : null;
+    const album = artist
+      ? await findOrCreateAlbum(tx, artist.id, metaAlbumName, uploadedById)
+      : null;
+    const albumId = album?.id ?? null;
+    const artistId = artist?.id ?? null;
 
-  return track;
+    return createTrack(tx, temporaryFile, albumId, artistId, uploadedById);
+  });
 }
 
 export async function uploadTracksRoute(app: FastifyInstance) {
   app.post<{
     Reply: ApiResponse<TrackDto>;
   }>("/upload", { preHandler: requiredAuth }, async (request, reply) => {
-    const userId = request.currentUser.id;
-    const file = await request.file();
+    let temporaryFile: TemporarySavedFile | null = null;
+    let fileCommitted = false;
+    let trackCreated = false;
 
-    if (!file) {
-      sendApiError(reply, 400, "You need to upload the file.");
-      return;
-    }
-    const temporaryFile = await saveTemporaryFile(file);
-    const track = await findTrackBySha256(temporaryFile.sha256);
-    if (track) {
-      return reply.code(409).send({
-        success: false,
-        error: "The audio file is already in the database.",
+    try {
+      const userId = request.currentUser.id;
+      const file = await request.file();
+
+      if (!file) {
+        sendApiError(reply, 400, "You need to upload the file.");
+        return;
+      }
+
+      temporaryFile = await saveTemporaryFile(file);
+
+      const existingTrack = await findTrackBySha256(temporaryFile.sha256);
+
+      if (existingTrack) {
+        const existingFilePath = resolveStoragePath(existingTrack.storageKey);
+        const hasFileOnDisk = await fileExists(existingFilePath);
+
+        if (hasFileOnDisk) {
+          await safeRemoveTmpFile(temporaryFile, request);
+
+          sendApiError(
+            reply,
+            409,
+            "The audio file is already in the database.",
+          );
+          return;
+        }
+        await commitUploadedFileToPath(temporaryFile, existingFilePath);
+      }
+
+      await commitUploadedFile(temporaryFile);
+      fileCommitted = true;
+
+      const createdTrack = await chainTracks(temporaryFile, userId);
+      trackCreated = true;
+
+      return reply.code(201).send({
+        success: true,
+        data: toTrackDto(createdTrack),
       });
-    }
-    const createdTrack = await chainTracks(temporaryFile, userId);
+    } catch (error) {
+      request.log.error(error, "Failed to upload track");
 
-    return reply.code(200).send({
-      success: true,
-      data: toTrackDto(createdTrack),
-    });
+      if (temporaryFile && !fileCommitted) {
+        await safeRemoveTmpFile(temporaryFile, request);
+      }
+
+      if (temporaryFile && fileCommitted && !trackCreated) {
+        await safeRemoveFinalFile(temporaryFile, request);
+      }
+
+      sendApiError(reply, 500, "Failed to upload track.");
+    }
   });
 }
 

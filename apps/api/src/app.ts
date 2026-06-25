@@ -7,6 +7,7 @@ import { loginRoutes } from "./routes/login.routes.js";
 import { meRoute } from "./routes/me.routes.js";
 import { logoutRoutes } from "./routes/logout.routes.js";
 import { uploadTracksRoute, getTracksRoute } from "./routes/tracks.routes.js";
+import { sendApiError } from "./lib/http/send-api-error.js";
 export function buildApp() {
   const app = fastify({
     logger: true,
@@ -25,5 +26,11 @@ export function buildApp() {
 
   app.register(uploadTracksRoute, { prefix: "/api/tracks" });
   app.register(getTracksRoute, { prefix: "/api/tracks" });
+
+  app.setErrorHandler((error, request, reply) => {
+    request.log.error(error);
+
+    return sendApiError(reply, 500, "Internal server error");
+  });
   return app;
 }
