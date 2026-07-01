@@ -1011,6 +1011,7 @@ export type ArtistScalarFieldEnum = (typeof ArtistScalarFieldEnum)[keyof typeof 
 export const AlbumScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  titleNormalized: 'titleNormalized',
   releaseYear: 'releaseYear',
   coverStorageKey: 'coverStorageKey',
   artistId: 'artistId',

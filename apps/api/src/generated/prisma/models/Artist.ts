@@ -198,16 +198,16 @@ export type ArtistOrderByWithRelationInput = {
 
 export type ArtistWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  name?: string
   AND?: Prisma.ArtistWhereInput | Prisma.ArtistWhereInput[]
   OR?: Prisma.ArtistWhereInput[]
   NOT?: Prisma.ArtistWhereInput | Prisma.ArtistWhereInput[]
-  name?: Prisma.StringFilter<"Artist"> | string
   createdAt?: Prisma.DateTimeFilter<"Artist"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Artist"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Artist"> | Date | string | null
   albums?: Prisma.AlbumListRelationFilter
   tracks?: Prisma.TrackListRelationFilter
-}, "id">
+}, "id" | "name">
 
 export type ArtistOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

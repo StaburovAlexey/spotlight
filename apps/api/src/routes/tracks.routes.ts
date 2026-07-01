@@ -56,22 +56,15 @@ async function findTrackBySha256(sha256: string) {
 }
 
 async function findOrCreateArtist(db: DbClient, name: string): Promise<Artist> {
-  const existingArtist = await db.artist.findFirst({
-    where: {
-      name,
-      deletedAt: null,
-    },
+  return db.artist.upsert({
+    where: { name },
+    create: { name },
+    update: { deletedAt: null },
   });
+}
 
-  if (existingArtist) {
-    return existingArtist;
-  }
-
-  return db.artist.create({
-    data: {
-      name,
-    },
-  });
+function normalizeAlbumTitle(title: string): string {
+  return title.trim().toLowerCase();
 }
 
 async function findOrCreateAlbum(
@@ -80,16 +73,19 @@ async function findOrCreateAlbum(
   title: string,
   uploadedById: string,
 ): Promise<Album> {
-  const existingAlbum = await db.album.findFirst({
-    where: { artistId, title },
-  });
-  if (existingAlbum) return existingAlbum;
-  return db.album.create({
-    data: {
+  const titleNormalized = normalizeAlbumTitle(title);
+
+  return db.album.upsert({
+    where: {
+      artistId_titleNormalized: { artistId, titleNormalized },
+    },
+    create: {
       title,
+      titleNormalized,
       artistId,
       uploadedById,
     },
+    update: {},
   });
 }
 
