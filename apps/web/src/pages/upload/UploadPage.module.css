@@ -1,0 +1,165 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #1ed760;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.title {
+  margin: 6px 0 0;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.dropZone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  padding: 32px 24px;
+  border: 2px dashed rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-large);
+  background: var(--content1);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.dropZone:hover,
+.dropZoneActive {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--primary) 8%, var(--content1));
+}
+
+.dropZoneIcon {
+  color: #a1a1aa;
+}
+
+.dropZoneText {
+  color: #a1a1aa;
+  font-size: 0.92rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.dropZoneHint {
+  color: #71717a;
+  font-size: 0.8rem;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a1a1aa;
+  font-size: 0.85rem;
+}
+
+.entryMetaSuccess {
+  color: var(--accent);
+}
+
+.entryMetaError {
+  color: oklch(0.65 0.22 25);
+}
+
+.clearBtn {
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: #a1a1aa;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.clearBtn:hover {
+  color: var(--foreground);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alertRemove {
+  flex-shrink: 0;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: #71717a;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.alertRemove:hover {
+  color: var(--foreground);
+  background: var(--content3);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 24px;
+  color: #71717a;
+  font-size: 0.9rem;
+  text-align: center;
+}

@@ -6,6 +6,7 @@ import { HomePage } from "../../pages/home/HomePage";
 import { LibraryPage } from "../../pages/library/LibraryPage";
 import { SearchPage } from "../../pages/search/SearchPage";
 import { LoginPage } from "../../pages/login/LoginPage";
+import { UploadPage } from "../../pages/upload/UploadPage";
 import { NotFoundPage } from "../../pages/not-found/NotFoundPage";
 import { HelloPage } from "../../pages/hello/HelloPage";
 import { SettingsPage } from "../../pages/settings/SettingsPage";
@@ -60,6 +61,11 @@ const routes = [
             path: "lib",
             element: <SettingsLibraryPage />,
             handle: { routeName: "Медиатека", back: true, to: "/settings" },
+          },
+          {
+            path: "upload",
+            element: <UploadPage />,
+            handle: { routeName: "Загрузка", back: true, to: "/settings" },
           },
         ],
       },

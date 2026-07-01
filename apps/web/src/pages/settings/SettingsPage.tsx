@@ -1,5 +1,5 @@
 import { Card, Chip } from "@heroui/react";
-import { ChevronRight, Library, User } from "lucide-react";
+import { ChevronRight, Library, Upload, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { classNames } from "../../shared/lib/classNames";
@@ -20,6 +20,13 @@ const settingsGroups = [
     description: "Импорт музыки, сканирование и будущие настройки каталога.",
     icon: Library,
     status: "Музыка",
+  },
+  {
+    to: "/settings/upload",
+    title: "Загрузка треков",
+    description: "Загрузите аудиофайлы в медиатеку. Поддержка MP3, FLAC, WAV и других форматов.",
+    icon: Upload,
+    status: "Импорт",
   },
 ];
 
