@@ -11,6 +11,7 @@ import { sendApiError } from "./lib/http/send-api-error.js";
 export function buildApp() {
   const app = fastify({
     logger: true,
+    bodyLimit: 200 * 1024 * 1024,
   });
   app.register(cookie);
   app.register(multipart);
