@@ -11,19 +11,20 @@ import {
   commitUploadedFileToPath,
   fileExists,
 } from "../lib/storage/save-uploaded-file.js";
-import type { ApiResponse } from "@music-app/shared";
+import type { ApiResponse, CursorQuery, TrackDto } from "@music-app/shared";
 import type {
   Album,
   Artist,
   Track,
   Prisma,
 } from "../generated/prisma/client.js";
-import type { TrackDto } from "@music-app/shared";
+
 import { toTrackDto } from "../lib/audio/to-track-dto.js";
 import { rm } from "node:fs/promises";
 import { resolveStoragePath } from "../lib/storage/storage-path.js";
 import type { FastifyRequest } from "fastify";
-
+import { parseLimit } from "../lib/routes/queryParseLimit.js";
+import { findManyWithCursor } from "../lib/storage/find-many-with-cursor.js";
 type DbClient = Prisma.TransactionClient;
 
 async function safeRemoveTmpFile(
@@ -207,20 +208,21 @@ export async function uploadTracksRoute(app: FastifyInstance) {
 }
 
 export async function getTracksRoute(app: FastifyInstance) {
-  app.get<{ Reply: ApiResponse<TrackDto[]> }>(
-    "/",
-    { preHandler: requiredAuth },
-    async (request, reply) => {
-      const tracks = await prisma.track.findMany({
-        where: { deletedAt: null },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
-      reply.code(200).send({
-        success: true,
-        data: tracks.map(toTrackDto),
-      });
-    },
-  );
+  app.get<{
+    Querystring: CursorQuery;
+    Reply: ApiResponse<{
+      items: TrackDto[];
+      nextCursor: string | null;
+    }>;
+  }>("/", { preHandler: requiredAuth }, async (request, reply) => {
+    const { items: tracks, nextCursor } = await findManyWithCursor(
+      request,
+      "track",
+    );
+
+    reply.code(200).send({
+      success: true,
+      data: { items: tracks.map(toTrackDto), nextCursor },
+    });
+  });
 }
